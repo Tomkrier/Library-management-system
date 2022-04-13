@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "function.h"
+# include "function.h"
 
 int booksNumber = 0;
 int usersNumber = 0;
@@ -28,21 +28,30 @@ void HeadmenuFunction()
                 gets(rubbish);
                 goto again;
             }
-            else if (botton > '3' || botton < '0')
+            else if (botton >= '0' && botton <= '9')
+            {
+                if (botton > '3')
+                {
+                    printf("输入错误,请重新输入\n");
+                }
+                else if (botton == '0' || botton == '1' || botton == '3' || botton == '2')
+                {
+                    break;
+                }
+            }
+            else
             {
                 gets(rubbish);
                 printf("输入错误,请重新输入\n");
-            }
-            else if (botton == '0' || botton == '1' || botton == '3' || botton == '2')
-            {
-                break;
             }
         }
         chose = botton - '0';
         switch (chose)
         {
         case 0:
-            Over();
+            printf("*= ================================================  =*\n");
+            printf("||                       谢谢使用                    ||\n");
+            printf("*= ================================================  =*\n");
             WritetoText();
             goto out;
             break;
@@ -58,11 +67,23 @@ void HeadmenuFunction()
         }
     }
 out:
+    system("cls");
+    printf("本次使用的数据如下:\n");
+    printf("                             <<图书数据>>\n");
+    for (int j = 0; j < booksNumber; j++)
+    {
+        printf("%2d %-30s %-20s %-20s\n", j + 1, books[j].name, books[j].author, books[j].press);
+    }
+    printf("                             <<用户数据>>\n");
+    for (int j = 0; j < usersNumber; j++)
+    {
+        printf("%-20s%-20s\n", users[j].name, users[j].password);
+    }
     system("pause");
     system("exit");
 }
 
-void LoadmenuFunction()
+void LoadmenuFunction(int text)
 {
     int botton;
     int againBotton;
@@ -73,7 +94,7 @@ againLoadmenuFunction:
     switch (botton)
     {
     case 1:
-        BorrowBook();
+        BorrowBook(text);
         printf("还需要继续吗?[yes(1) ; no(0)]\n");
         scanf("%d", &againBotton);
         getchar();
@@ -83,7 +104,7 @@ againLoadmenuFunction:
         }
         break;
     case 2:
-        ReturnBook();
+        ReturnBook(text);
         printf("还需要继续吗?[yes(1) ; no(0)]\n");
         scanf("%d", &againBotton);
         getchar();
@@ -114,6 +135,7 @@ void Register()
         strcpy(users[usersNumber].name, process.name);
         strcpy(users[usersNumber].password, process.password);
         usersNumber++;
+        printf("注册成功\n");
     }
     else
     {
@@ -129,11 +151,13 @@ void Register()
         if (flag == 0)
         {
             printf("请输入密码:");
-            scanf("%s\n", &process.password);
+            scanf("%s", &process.password);
             getchar();
             strcpy(users[usersNumber].name, process.name);
             strcpy(users[usersNumber].password, process.password);
+            users[usersNumber].borrownumber = 0;
             usersNumber++;
+            printf("注册成功\n");
         }
     }
 }
@@ -169,7 +193,7 @@ void load()
             if (!strcmp(users[i].password, process.password))
             {
                 printf("登陆成功\n");
-                LoadmenuFunction();
+                LoadmenuFunction(i);
             }
             else
             {
@@ -196,8 +220,8 @@ void Input_Book()
         scanf("%s", &process.author);
         getchar();
         printf("请输入出版社名:");
-        getchar();
         scanf("%s", &process.press);
+        getchar();
         strcpy(books[booksNumber].name, process.name);
         strcpy(books[booksNumber].author, process.author);
         strcpy(books[booksNumber].press, process.press);
@@ -221,8 +245,8 @@ void Input_Book()
             scanf("%s", &process.author);
             getchar();
             printf("请输入出版社名:");
-            getchar();
             scanf("%s", &process.press);
+            getchar();
             strcpy(books[booksNumber].name, process.name);
             strcpy(books[booksNumber].author, process.author);
             strcpy(books[booksNumber].press, process.press);
@@ -232,7 +256,7 @@ void Input_Book()
     }
 }
 
-void BorrowBook()
+void BorrowBook(int text)
 {
     if (booksNumber == 0)
     {
@@ -249,14 +273,24 @@ void BorrowBook()
         printf("请输入需要借阅的书号:");
         scanf("%d", &botton);
         getchar();
-        if (botton >= 0 && botton < booksNumber)
+        if (botton >= 0 && botton < booksNumber + 1)
         {
             printf("借阅成功\n");
+            int vec;
             for (int i = 0; i < booksNumber; i++)
             {
-                if (i != botton)
+                if (i != botton - 1)
                 {
                     printf("%2d %-30s %-20s %-20s\n", books[i].id, books[i].name, books[i].author, books[i].press);
+                }
+                else
+                {
+                    vec = users[text].borrownumber;
+                    users[text].borrowmenu[vec].id = books[i].id;
+                    strcpy(users[text].borrowmenu[vec].name, books[i].name);
+                    strcpy(users[text].borrowmenu[vec].author, books[i].author);
+                    strcpy(users[text].borrowmenu[vec].press, books[i].press);
+                    users[text].borrownumber++;
                 }
             }
             printf("显示完成\n");
@@ -269,28 +303,49 @@ void BorrowBook()
     }
 }
 
-void ReturnBook()
+void ReturnBook(int text)
 {
     char process[30];
     int flag = 1;
-    printf("请输入需要归还的书名:");
-    scanf("%s", &process);
-    getchar();
-    for (int i = 0; i < booksNumber; i++)
+    if (users[text].borrownumber == 0)
     {
-        if (!strcmp(books[i].name, process))
-        {
-            flag = 0;
-            break;
-        }
-    }
-    if (flag == 1)
-    {
-        printf("这本书不属于这个书库\n");
+        printf("您还未借书\n");
     }
     else
     {
-        printf("归还成功\n");
+        for (int i = 0; i < users[text].borrownumber; i++)
+        {
+            printf("%2d %-30s %-20s %-20s\n",
+                   users[text].borrowmenu[i].id,
+                   users[text].borrowmenu[i].name,
+                   users[text].borrowmenu[i].author,
+                   users[text].borrowmenu[i].press);
+        }
+        printf("请输入需要归还的书名:");
+        scanf("%s", &process);
+        getchar();
+        int i;
+        for (i = 0; i < users[text].borrownumber; i++)
+        {
+            if (!strcmp(users[text].borrowmenu[i].name, process))
+            {
+                flag = 0;
+                break;
+            }
+        }
+        if (flag == 1)
+        {
+            printf("您未借这本书\n");
+        }
+        else
+        {
+            printf("归还成功\n");
+            for (int j = users[text].borrownumber - 1; j > i; j--)
+            {
+                users[text].borrowmenu[j - 1] = users[text].borrowmenu[j];
+            }
+            users[text].borrownumber--;
+        }
     }
 }
 
@@ -410,14 +465,45 @@ void Administrator()
     if (!Administratorload())
     {
         char a[4] = {"\0"};
-        int botton;
+        char botton;
         int againAdministrator;
+        char rubbish[NUM];
+        int chose;
     againAdministrator:
-        Administratormenu();
-        printf("请输入您需要的功能按钮:");
-        scanf("%d", &botton);
-        getchar();
-        switch (botton)
+
+        while (1)
+        {
+        again1:
+            Administratormenu();
+            printf("请输入您需要的功能按钮:");
+            scanf("%c", &botton);
+            getchar();
+            if (botton == '\n')
+            {
+                gets(rubbish);
+                goto again1;
+            }
+            else if (botton >= '0' && botton <= '9')
+            {
+                if (botton == '9')
+                {
+                    printf("输入错误,请重新输入\n");
+                }
+                else
+                {
+                    break;
+                }
+            }
+            else
+            {
+                gets(rubbish);
+                printf("输入错误,请重新输入\n");
+            }
+        }
+        chose = botton - '0';
+        int i_i = 0, n_i, t_i = 0;
+        int bookName;
+        switch (chose)
         {
         case 1:
             Input_Book();
@@ -451,7 +537,46 @@ void Administrator()
             }
             break;
         case 3:
-            Deletebook();
+            if (booksNumber == 0)
+            {
+                printf("删除失败！不存在图书信息！\n");
+            }
+            else
+            {
+                for (int j = 0; j < booksNumber; j++)
+                {
+                    printf("%2d %-30s %-20s %-20s\n", j + 1, books[j].name, books[j].author, books[j].press);
+                }
+                printf("请输入要删除的序号：");
+                scanf("%d", &bookName);
+                getchar();
+                if (bookName > 0 && bookName <= booksNumber)
+                {
+                    int confirm;
+                    int flagN = 0;
+                    printf("确认删除吗(是'1',否'0')");
+                    scanf("%d", &confirm);
+                    getchar();
+                    if (confirm == 1)
+                    {
+                        printf("删除图书信息成功！\n");
+                        bookName = bookName - 1;
+                        for (int i = booksNumber - 1; i > bookName; i--)
+                        {
+                            books[i - 1] = books[i];
+                        }
+                        booksNumber--;
+                    }
+                    else
+                    {
+                        printf("删除失败\n");
+                    }
+                }
+                else
+                {
+                    printf("没有这本图书,无法删除\n");
+                }
+            }
             printf("还需要继续吗?[yes(1) ; no(0)]\n");
             scanf("%d", &againAdministrator);
             getchar();
@@ -543,65 +668,9 @@ void Administrator()
     }
 }
 
-void Deletebook()
-{
-    char bookName[30];
-    int i = 0, n;
-    if (booksNumber == 0)
-    {
-        printf("删除失败！不存在图书信息！\n");
-    }
-    else
-    {
-        for (int j = 0; j < booksNumber; j++)
-        {
-            printf("%2d %-30s %-20s %-20s\n", books[i].id, books[i].name, books[i].author, books[i].press);
-        }
-        printf("请输入要删除的书名：");
-        scanf("%s", &bookName);
-        getchar();
-        for (i = 0; i < booksNumber; i++)
-        {
-            if (!strcmp(books[i].name, bookName))
-            {
-                i = 1;
-                break;
-            }
-        }
-        if (i == 0)
-        {
-            printf("删除失败！不存在该图书！\n");
-        }
-        else
-        {
-            int confirm;
-            printf("确认删除吗(是'1',否'0')");
-            scanf("%d", &confirm);
-            getchar();
-            if (confirm == 1)
-            {
-                n = i + 1;
-                for (i = 0; i < booksNumber; i++)
-                {
-                    if (!strcmp(books[i].name, bookName))
-                    {
-                        break;
-                    }
-                }
-                for (; i < n - 1; i++)
-                {
-                    books[i] = books[i + 1];
-                }
-                booksNumber--;
-                printf("删除图书信息成功！\n");
-            }
-        }
-    }
-}
-
 void Deleteuser()
 {
-    char userName[30];
+    int userName;
     int i = 0, n;
     if (usersNumber == 0)
     {
@@ -613,44 +682,34 @@ void Deleteuser()
         {
             printf("%-20s%-20s\n", users[i].name, users[i].password);
         }
-        printf("请输入要删除的用户名：");
-        scanf("%s", &userName);
+        printf("请输入要删除的用户序号：");
+        scanf("%d", &userName);
         getchar();
-        for (i = 0; i < usersNumber; i++)
-        {
-            if (!strcmp(users[i].name, userName))
-            {
-                i = 1;
-                break;
-            }
-        }
-        if (i == 0)
-        {
-            printf("删除失败！不存在该用户！\n");
-        }
-        else
+        if (userName > 0 && userName <= usersNumber)
         {
             int confirm;
+            int flagN = 0;
             printf("确认删除吗(是'1',否'0')");
             scanf("%d", &confirm);
             getchar();
             if (confirm == 1)
             {
-                n = i + 1;
-                for (i = 0; i < usersNumber; i++)
+                printf("删除用户信息成功！\n");
+                userName = userName - 1;
+                for (int i = usersNumber - 1; i > userName; i--)
                 {
-                    if (!strcmp(users[i].name, userName))
-                    {
-                        break;
-                    }
-                }
-                for (; i < n - 1; i++)
-                {
-                    users[i] = users[i + 1];
+                    users[i - 1] = users[i];
                 }
                 usersNumber--;
-                printf("删除用户信息成功！\n");
             }
+            else
+            {
+                printf("删除失败\n");
+            }
+        }
+        else
+        {
+            printf("删除失败！不存在此用户信息!\n");
         }
     }
 }
