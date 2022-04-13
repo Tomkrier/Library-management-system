@@ -6,32 +6,33 @@
 
 typedef struct
 {
-    int id;          //ÊéºÅ
-    char name[30];   //ÊéÃû
-    char author[20]; //×÷Õß
-    char press[50];  //³ö°æÉçÃû
+    int id;          //ä¹¦å·
+    char name[30];   //ä¹¦å
+    char author[20]; //ä½œè€…
+    char press[50];  //å‡ºç‰ˆç¤¾å
 } Book;
 
 typedef struct
 {
-    char name[20];     //ÓÃ»§Ãû
-    char password[20]; //ÓÃ»§ÃÜÂë
+    char name[20];     //ç”¨æˆ·å
+    char password[20]; //ç”¨æˆ·å¯†ç 
+    Book borrowmenu[NUM];
+    int borrownumber;
 } User;
 
-void Headmenu();          //ÆğÊ¼Ä¿Â¼UI
-void HeadmenuFunction();  //ÆğÊ¼Ä¿Â¼
-void LoadmenuFunction();  //µÇÂ½Ä¿Â¼
-void Loadmenu();          //µÇÂ½Ä¿Â¼UI
-void Register();          //×¢²áº¯Êı
-void BorrowBook();        //½èÊéº¯Êı
-void ReturnBook();        //»¹Êéº¯Êı
-void load();              //µÇÂ½º¯Êı
-void Input_Book();        //Êé±¾Â¼Èë
-void ReadtoText();        //ÎÄ¼ş¶ÁÈ¡
-void WritetoText();       //ÎÄ¼şÊä³ö
-void Administrator();     //¹ÜÀíÔ±ÏµÍ³
-void Administratormenu(); //¹ÜÀíÔ±UI
-int Administratorload();  //¹ÜÀíÔ±µÇÂ½º¯Êı(³É¹¦0 £» Ê§°Ü1)
-void Deletebook();        //É¾Êé
-void Deleteuser();        //É¾³ıÓÃ»§
-void Over();              //³ÌĞò¹Ø±ÕUI
+void Headmenu();                 //èµ·å§‹ç›®å½•UI
+void HeadmenuFunction();         //èµ·å§‹ç›®å½•
+void LoadmenuFunction(int text); //ç™»é™†ç›®å½•
+void Loadmenu();                 //ç™»é™†ç›®å½•UI
+void Register();                 //æ³¨å†Œå‡½æ•°
+void BorrowBook(int text);       //å€Ÿä¹¦å‡½æ•°
+void ReturnBook(int text);       //è¿˜ä¹¦å‡½æ•°
+void load();                     //ç™»é™†å‡½æ•°
+void Input_Book();               //ä¹¦æœ¬å½•å…¥
+void ReadtoText();               //æ–‡ä»¶è¯»å–
+void WritetoText();              //æ–‡ä»¶è¾“å‡º
+void Administrator();            //ç®¡ç†å‘˜ç³»ç»Ÿ
+void Administratormenu();        //ç®¡ç†å‘˜UI
+int Administratorload();         //ç®¡ç†å‘˜ç™»é™†å‡½æ•°(æˆåŠŸ0 ï¼› å¤±è´¥1)
+void Deleteuser();               //åˆ é™¤ç”¨æˆ·
+
