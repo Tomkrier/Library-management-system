@@ -3,46 +3,49 @@
 #include <string.h>
 #include <time.h>
 
+#define _CRT_SECURE_NO_DEPRECATE
+#pragma warning(disable : 4996)
+
 #define NUM 10
 
 typedef struct
 {
-    int id;          //ÊéºÅ
-    char name[30];   //ÊéÃû
-    char author[20]; //×÷Õß
-    char press[50];  //³ö°æÉçÃû
+    int id;          //ä¹¦å·
+    char name[30];   //ä¹¦å
+    char author[20]; //ä½œè€…
+    char press[50];  //å‡ºç‰ˆç¤¾å
 } Book;
 
 typedef struct
 {
-    char name[20];        //ÓÃ»§Ãû
-    char password[20];    //ÓÃ»§ÃÜÂë
-    Book returnmenu[NUM]; //¿É½èÊéÊı¾İ
-    int returnnumber;     //¿É½èÊéÊıÁ¿
-    Book borrowmenu[NUM]; //¿É»¹ÊéÊı¾İ
-    int borrownumber;     //¿É»¹ÊéÊıÁ¿
+    char name[20];        //ç”¨æˆ·å
+    char password[20];    //ç”¨æˆ·å¯†ç 
+    char phone[30];       //è”ç³»æ–¹å¼
+    Book returnmenu[NUM]; //å¯è¿˜ä¹¦æ•°æ®
+    int returnnumber;     //å¯è¿˜ä¹¦æ•°é‡
 } User;
 
 Book books[NUM];
 User users[NUM];
+Book booksMenu[NUM];
 int booksNumber = 0;
 int usersNumber = 0;
-
+int sunBooksnumber = 0;
 int year, month, day, hour, miniute, second;
 int overyear, overmonth, overday, overhour, overminiute, oversecond;
 
-void HeadmenuFunction();         //ÆğÊ¼Ä¿Â¼
-void LoadmenuFunction(int text); //µÇÂ½Ä¿Â¼
-void Register();                 //×¢²áº¯Êı
-void BorrowBook(int text);       //½èÊéº¯Êı
-void ReturnBook(int text);       //»¹Êéº¯Êı
-void load();                     //µÇÂ½º¯Êı
-void Input_Book();               //Êé±¾Â¼Èë
-void ReadtoText();               //ÎÄ¼ş¶ÁÈ¡
-void WritetoText();              //ÎÄ¼şÊä³ö
-void Administrator();            //¹ÜÀíÔ±ÏµÍ³
-int Administratorload();         //¹ÜÀíÔ±µÇÂ½º¯Êı(³É¹¦0 £» Ê§°Ü1)
-void Deleteuser();               //É¾³ıÓÃ»§
+void HeadmenuFunction();         //èµ·å§‹ç›®å½•
+void LoadmenuFunction(int text); //ç™»é™†ç›®å½•
+void Register();                 //æ³¨å†Œå‡½æ•°
+void BorrowBook(int text);       //å€Ÿä¹¦å‡½æ•°
+void ReturnBook(int text);       //è¿˜ä¹¦å‡½æ•°
+void load();                     //ç™»é™†å‡½æ•°
+void Input_Book();               //ä¹¦æœ¬å½•å…¥
+void ReadtoText();               //æ–‡ä»¶è¯»å–
+void WritetoText();              //æ–‡ä»¶è¾“å‡º
+void Administrator();            //ç®¡ç†å‘˜ç³»ç»Ÿ
+int Administratorload();         //ç®¡ç†å‘˜ç™»é™†å‡½æ•°(æˆåŠŸ0 ï¼› å¤±è´¥1)
+void Deleteuser();               //åˆ é™¤ç”¨æˆ·
 
 int main()
 {
@@ -63,9 +66,9 @@ int main()
     }
     printf("*= =============================================================  =*\n");
     printf("||                                                                ||\n");
-    printf("||             »¶Ó­Ê¹ÓÃ¸£Öİ´óÑ§ÖÁ³ÏÑ§ÔºÍ¼Êé¹ÜÀíÏµÍ³               ||\n");
+    printf("||             æ¬¢è¿ä½¿ç”¨ç¦å·å¤§å­¦è‡³è¯šå­¦é™¢å›¾ä¹¦ç®¡ç†ç³»ç»Ÿ               ||\n");
     printf("||                                                                ||\n");
-    printf("||                    ÏÖÔÚÊÇ±±¾©Ê±¼ä£º%d-%02d-%02d %02d:%02d:%02d         ||\n",
+    printf("||                    ç°åœ¨æ˜¯åŒ—äº¬æ—¶é—´ï¼š%d-%02d-%02d %02d:%02d:%02d         ||\n",
            year, month, day, hour, miniute, second);
     printf("*= =============================================================  =*\n");
     system("pause");
@@ -83,16 +86,17 @@ void HeadmenuFunction()
         while (1)
         {
             printf("*= ================================================  =*\n");
-            printf("|| *******»¶Ó­Ê¹ÓÃ¸£Öİ´óÑ§ÖÁ³ÏÑ§ÔºÍ¼Êé¹ÜÀíÏµÍ³****** ||\n");
-            printf("||    1.µÇÂ½                                         ||\n");
-            printf("||    2.×¢²á                                         ||\n");
-            printf("||    3.¹ÜÀíÔ±ÏµÍ³                                   ||\n");
-            printf("||    0.ÍË³ö                                         ||\n");
+            printf("|| *******æ¬¢è¿ä½¿ç”¨ç¦å·å¤§å­¦è‡³è¯šå­¦é™¢å›¾ä¹¦ç®¡ç†ç³»ç»Ÿ****** ||\n");
+            printf("||    1.ç™»é™†                                         ||\n");
+            printf("||    2.æ³¨å†Œ                                         ||\n");
+            printf("||    3.ç®¡ç†å‘˜ç³»ç»Ÿ                                   ||\n");
+            printf("||    0.é€€å‡º                                         ||\n");
             printf("|| *******---------~~~~~~~~~~~~~~~~~~--------******* ||\n");
             printf("*= ================================================  =*\n");
-            printf("ÇëÊäÈëÄúĞèÒªµÄ¹¦ÄÜ°´Å¥:");
+            printf("è¯·è¾“å…¥æ‚¨éœ€è¦çš„åŠŸèƒ½æŒ‰é’®:");
         again:
-            gets(key);
+            scanf("%s", &key);
+            getchar();
             text = strlen(key);
             if (text == 0)
             {
@@ -100,14 +104,14 @@ void HeadmenuFunction()
             }
             else if (text > 1)
             {
-                printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+                printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
             }
             else
             {
                 botton = key[0];
                 if (botton != '0' && botton != '1' && botton != '2' && botton != '3')
                 {
-                    printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+                    printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
                 }
                 else
                 {
@@ -153,24 +157,24 @@ out:
     printf("||                                                                ||\n");
     printf("||                       Thanks for using it                      ||\n");
     printf("||                                                                ||\n");
-    printf("||                    ÏÖÔÚÊÇ±±¾©Ê±¼ä£º%d-%02d-%02d %02d:%02d:%02d         ||\n",
+    printf("||                    ç°åœ¨æ˜¯åŒ—äº¬æ—¶é—´ï¼š%d-%02d-%02d %02d:%02d:%02d         ||\n",
            overyear, overmonth, overday, overhour, overminiute, oversecond);
     printf("||                                                                ||\n");
     printf("*= =============================================================  =*\n");
     system("pause");
     WritetoText();
     system("cls");
-    printf("±¾´ÎÊ¹ÓÃµÄÊı¾İÈçÏÂ:\n");
+    printf("æœ¬æ¬¡ä½¿ç”¨çš„æ•°æ®å¦‚ä¸‹:\n");
     if (booksNumber == 0 && usersNumber == 0)
     {
-        printf("¿Õ\n");
+        printf("ç©º\n");
     }
     else
     {
-        printf("                             <<Í¼ÊéÊı¾İ>>\n");
+        printf("                             <<å›¾ä¹¦æ•°æ®>>\n");
         if (booksNumber == 0)
         {
-            printf("¿Õ\n");
+            printf("ç©º\n");
         }
         else
         {
@@ -179,10 +183,10 @@ out:
                 printf("%2d %-30s %-20s %-20s\n", j + 1, books[j].name, books[j].author, books[j].press);
             }
         };
-        printf("                             <<ÓÃ»§Êı¾İ>>\n");
+        printf("                             <<ç”¨æˆ·æ•°æ®>>\n");
         if (usersNumber == 0)
         {
-            printf("¿Õ\n");
+            printf("ç©º\n");
         }
         else
         {
@@ -192,9 +196,9 @@ out:
             }
         }
     }
-    printf("<<´Ë´Î¸£Öİ´óÑ§ÖÁ³ÏÑ§ÔºÍ¼Êé¹ÜÀíÏµÍ³ÔËĞĞÊ±¼ä>>\n");
-    printf("¿ªÊ¼Ê±¼ä:%d-%d-%d %d:%d:%d\n", year, month, day, hour, miniute, second);
-    printf("½áÊøÊ±¼ä:%d-%d-%d %d:%d:%d\n", overyear, overmonth, overday, overhour, overminiute, oversecond);
+    printf("<<æ­¤æ¬¡ç¦å·å¤§å­¦è‡³è¯šå­¦é™¢å›¾ä¹¦ç®¡ç†ç³»ç»Ÿè¿è¡Œæ—¶é—´>>\n");
+    printf("å¼€å§‹æ—¶é—´:%d-%d-%d %d:%d:%d\n", year, month, day, hour, miniute, second);
+    printf("ç»“æŸæ—¶é—´:%d-%d-%d %d:%d:%d\n", overyear, overmonth, overday, overhour, overminiute, oversecond);
     system("pause");
     system("exit");
 }
@@ -208,15 +212,16 @@ againLoadmenuFunction:
     {
         printf("*= ================================================  =*\n");
         printf("|| *******------------------------------------****** ||\n");
-        printf("|| *  1.½èÊé                                       * ||\n");
-        printf("|| *  2.»¹Êé                                       * ||\n");
-        printf("|| *  3.ĞŞ¸ÄÃÜÂë                                   * ||\n");
-        printf("|| *  0.ÍË³ö                                       * ||\n");
+        printf("|| *  1.å€Ÿä¹¦                                       * ||\n");
+        printf("|| *  2.è¿˜ä¹¦                                       * ||\n");
+        printf("|| *  3.ä¿®æ”¹å¯†ç                                    * ||\n");
+        printf("|| *  0.é€€å‡º                                       * ||\n");
         printf("|| *******---------~~~~~~~~~~~~~~~~~~--------******* ||\n");
         printf("*= ================================================  =*\n");
-        printf("ÇëÊäÈëÄúĞèÒªµÄ¹¦ÄÜ°´Å¥:");
+        printf("è¯·è¾“å…¥æ‚¨éœ€è¦çš„åŠŸèƒ½æŒ‰é’®:");
     again1:
-        gets(key);
+        scanf("%s", &key);
+        getchar();
         txt = strlen(key);
         if (txt == 0)
         {
@@ -224,14 +229,14 @@ againLoadmenuFunction:
         }
         else if (txt > 1)
         {
-            printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+            printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
         }
         else
         {
             botton = key[0];
             if (botton != '1' && botton != '2' && botton != '3' && botton != '0')
             {
-                printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+                printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
             }
             else
             {
@@ -240,17 +245,18 @@ againLoadmenuFunction:
         }
     }
     chose = botton - '0';
-    char newPassword[20];
+    char newPassword[20], i_o_p[20];
     char again_key[3], again_botton;
-    int again_txt;
+    int again_txt, i_j_n;
     switch (chose)
     {
     case 0:
         while (1)
         {
-            printf("È·ÈÏÍË³ö¸£Öİ´óÑ§ÖÁ³ÏÑ§ÔºÍ¼Êé¹ÜÀíÏµÍ³ÓÃ»§¶ËÂğ?(ÊÇ'1' ; ·ñ'0')\n");
+            printf("ç¡®è®¤é€€å‡ºç¦å·å¤§å­¦è‡³è¯šå­¦é™¢å›¾ä¹¦ç®¡ç†ç³»ç»Ÿç”¨æˆ·ç«¯å—?(æ˜¯'1' ; å¦'0')\n");
         againagain_0:
-            gets(again_key);
+            scanf("%s", &again_key);
+            getchar();
             again_txt = strlen(again_key);
             if (again_txt == 0)
             {
@@ -258,14 +264,14 @@ againLoadmenuFunction:
             }
             else if (again_txt > 1)
             {
-                printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+                printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
             }
             else
             {
                 again_botton = again_key[0];
                 if (again_botton != '0' && again_botton != '1')
                 {
-                    printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+                    printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
                 }
                 else
                 {
@@ -283,12 +289,43 @@ againLoadmenuFunction:
         }
         break;
     case 1:
-        BorrowBook(text);
+        if (booksNumber == 0)
+        {
+            printf("æ­¤ä¹¦åº“è¿˜æ²¡æœ‰ä¹¦æœ¬\n");
+        }
+        else
+        {
+        o_k_m:
+            printf("è¯·è¾“å…¥éœ€è¦å€Ÿé˜…çš„ä¹¦æœ¬æ•°é‡(æœ€å¤šå€Ÿ6æœ¬):");
+            scanf("%s", &i_o_p);
+            getchar();
+            i_j_n = strlen(i_o_p);
+            if (i_j_n != 1)
+            {
+                printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
+                goto o_k_m;
+            }
+            if (i_o_p[0] <= '0' || i_o_p[0] >= '6')
+            {
+                printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
+                goto o_k_m;
+            }
+            for (int i = 0; i < i_j_n; i++)
+            {
+                BorrowBook(text);
+                if (booksNumber != 0)
+                {
+                    printf("ç¬¬%dæœ¬å€Ÿä¹¦å®Œæˆ\n", i + 1);
+                }
+            }
+            printf("å…¨éƒ¨å€Ÿä¹¦å®Œæˆ\n");
+        }
         while (1)
         {
-            printf("»¹ĞèÒª¼ÌĞøÂğ?[yes(1) ; no(0)]\n");
+            printf("è¿˜éœ€è¦ç»§ç»­å—?[yes(1) ; no(0)]\n");
         againagain_1:
-            gets(again_key);
+            scanf("%s", &again_key);
+            getchar();
             again_txt = strlen(again_key);
             if (again_txt == 0)
             {
@@ -296,14 +333,14 @@ againLoadmenuFunction:
             }
             else if (again_txt > 1)
             {
-                printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+                printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
             }
             else
             {
                 again_botton = again_key[0];
                 if (again_botton != '0' && again_botton != '1')
                 {
-                    printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+                    printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
                 }
                 else
                 {
@@ -315,14 +352,49 @@ againLoadmenuFunction:
         {
             goto againLoadmenuFunction;
         }
+        else
+        {
+            system("cls");
+        }
         break;
     case 2:
-        ReturnBook(text);
+        if (users[text].returnnumber == 0)
+        {
+            printf("æ­¤ç”¨æˆ·è¿˜æœªå€Ÿä¹¦,ä¸éœ€è¦å½’è¿˜\n");
+        }
+        else
+        {
+        o_k_s:
+            printf("è¯·è¾“å…¥éœ€è¦å½’è¿˜çš„ä¹¦æœ¬æ•°é‡(æœ€å¤šè¿˜6æœ¬):");
+            scanf("%s", &i_o_p);
+            getchar();
+            i_j_n = strlen(i_o_p);
+            if (i_j_n != 1)
+            {
+                printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
+                goto o_k_s;
+            }
+            if (i_o_p[0] <= '0' || i_o_p[0] >= '6')
+            {
+                printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
+                goto o_k_s;
+            }
+            for (int i = 0; i < i_j_n; i++)
+            {
+                ReturnBook(text);
+                if (users[text].returnnumber != 0)
+                {
+                    printf("ç¬¬%dæœ¬è¿˜ä¹¦å®Œæˆ\n", i + 1);
+                }
+            }
+            printf("å…¨éƒ¨è¿˜ä¹¦å®Œæˆ\n");
+        }
         while (1)
         {
-            printf("»¹ĞèÒª¼ÌĞøÂğ?[yes(1) ; no(0)]\n");
+            printf("è¿˜éœ€è¦ç»§ç»­å—?[yes(1) ; no(0)]\n");
         againagain_2:
-            gets(again_key);
+            scanf("%s", &again_key);
+            getchar();
             again_txt = strlen(again_key);
             if (again_txt == 0)
             {
@@ -330,14 +402,14 @@ againLoadmenuFunction:
             }
             else if (again_txt > 1)
             {
-                printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+                printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
             }
             else
             {
                 again_botton = again_key[0];
                 if (again_botton != '0' && again_botton != '1')
                 {
-                    printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+                    printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
                 }
                 else
                 {
@@ -349,17 +421,30 @@ againLoadmenuFunction:
         {
             goto againLoadmenuFunction;
         }
+        else
+        {
+            system("cls");
+        }
         break;
     case 3:
-        printf("ÇëÊäÈëĞÂÃÜÂë:");
+    q_s_c:
+        printf("è¯·è¾“å…¥æ–°å¯†ç :");
         scanf("%s", &newPassword);
         getchar();
+        if (!strcmp(users[text].password, newPassword))
+        {
+            printf("æ–°å¯†ç ä¸èƒ½ä¸æ—§å¯†ç ä¸€è‡´\n");
+            printf("è¯·é‡æ–°è¾“å…¥\n");
+            goto q_s_c;
+        }
         strcpy(users[text].password, newPassword);
+        printf("é‡ç½®å¯†ç æˆåŠŸ\n");
         while (1)
         {
-            printf("»¹ĞèÒª¼ÌĞøÂğ?[yes(1) ; no(0)]\n");
+            printf("è¿˜éœ€è¦ç»§ç»­å—?[yes(1) ; no(0)]\n");
         againagain_3:
-            gets(again_key);
+            scanf("%s", &again_key);
+            getchar();
             again_txt = strlen(again_key);
             if (again_txt == 0)
             {
@@ -367,14 +452,14 @@ againLoadmenuFunction:
             }
             else if (again_txt > 1)
             {
-                printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+                printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
             }
             else
             {
                 again_botton = again_key[0];
                 if (again_botton != '0' && again_botton != '1')
                 {
-                    printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+                    printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
                 }
                 else
                 {
@@ -386,9 +471,13 @@ againLoadmenuFunction:
         {
             goto againLoadmenuFunction;
         }
+        else
+        {
+            system("cls");
+        }
         break;
     default:
-        printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+        printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
         goto againLoadmenuFunction;
         break;
     }
@@ -397,20 +486,23 @@ againLoadmenuFunction:
 
 void Register()
 {
-    User process;
+    User process={0};
     int flag = 0;
-    printf("ÇëÊäÈëÓÃ»§Ãû:");
+    printf("è¯·è¾“å…¥ç”¨æˆ·å:");
     scanf("%s", &process.name);
     getchar();
     if (usersNumber == 0)
     {
-        printf("ÇëÊäÈëÃÜÂë:");
+        printf("è¯·è¾“å…¥å¯†ç :");
         scanf("%s", &process.password);
         getchar();
         strcpy(users[usersNumber].name, process.name);
         strcpy(users[usersNumber].password, process.password);
+        printf("è¯·è¾“å…¥è”ç³»æ–¹å¼:");
+        scanf("%s", &process.phone);
+        strcpy(users[usersNumber].phone, process.phone);
         usersNumber++;
-        printf("×¢²á³É¹¦\n");
+        printf("æ³¨å†ŒæˆåŠŸ\n");
     }
     else
     {
@@ -418,41 +510,43 @@ void Register()
         {
             if (!strcmp(users[i].name, process.name))
             {
-                printf("¸ÃÓÃ»§ÒÑ´æÔÚ,×¢²áÊ§°Ü\n");
+                printf("è¯¥ç”¨æˆ·å·²å­˜åœ¨,æ³¨å†Œå¤±è´¥\n");
                 flag = 1;
                 break;
             }
         }
         if (flag == 0)
         {
-            printf("ÇëÊäÈëÃÜÂë:");
+            printf("è¯·è¾“å…¥å¯†ç :");
             scanf("%s", &process.password);
             getchar();
             strcpy(users[usersNumber].name, process.name);
             strcpy(users[usersNumber].password, process.password);
-            users[usersNumber].borrownumber = 0;
             users[usersNumber].returnnumber = 0;
+            printf("è¯·è¾“å…¥è”ç³»æ–¹å¼:");
+            scanf("%s", &process.phone);
+            strcpy(users[usersNumber].phone, process.phone);
             usersNumber++;
-            printf("×¢²á³É¹¦\n");
+            printf("æ³¨å†ŒæˆåŠŸ\n");
         }
     }
 }
 
 void load()
 {
-    User process;
+    User process={0};
     int flag = 1, i;
     if (usersNumber == 0)
     {
-        printf("²éÕÒÊ§°Ü!²»´æÔÚÓÃ»§ĞÅÏ¢!\n");
-        printf("ÇëÏÈÍê³É×¢²á\n");
+        printf("æŸ¥æ‰¾å¤±è´¥!ä¸å­˜åœ¨ç”¨æˆ·ä¿¡æ¯!\n");
+        printf("è¯·å…ˆå®Œæˆæ³¨å†Œ\n");
         Register();
         goto load_1;
     }
     else
     {
     load_1:
-        printf("ÇëÊäÈëÕËºÅ:");
+        printf("è¯·è¾“å…¥è´¦å·:");
         scanf("%s", &process.name);
         getchar();
         for (i = 0; i < usersNumber; i++)
@@ -465,49 +559,39 @@ void load()
         }
         if (flag == 0)
         {
-            printf("ÇëÊäÈëÃÜÂë:");
+            printf("è¯·è¾“å…¥å¯†ç :");
             scanf("%s", &process.password);
             getchar();
             if (!strcmp(users[i].password, process.password))
             {
-                printf("µÇÂ½³É¹¦\n");
-                if (users[i].borrownumber == 0)
-                {
-                    for (int m = 0; m < booksNumber; m++)
-                    {
-                        strcpy(users[i].borrowmenu[m].author, books[m].author);
-                        strcpy(users[i].borrowmenu[m].name, books[m].name);
-                        strcpy(users[i].borrowmenu[m].press, books[m].press);
-                    }
-                    users[i].borrownumber = booksNumber;
-                }
+                printf("ç™»é™†æˆåŠŸ\n");
                 LoadmenuFunction(i);
             }
             else
             {
-                printf("ÃÜÂë´íÎó,µÇÂ½Ê§°Ü\n");
+                printf("å¯†ç é”™è¯¯,ç™»é™†å¤±è´¥\n");
             }
         }
         else
         {
-            printf("²éÎŞ´ËÓÃ»§\n");
+            printf("æŸ¥æ— æ­¤ç”¨æˆ·\n");
         }
     }
 }
 
 void Input_Book()
 {
-    Book process;
+    Book process={0};
     int flag = 0;
-    printf("ÇëÊäÈëÊéÃû:");
+    printf("è¯·è¾“å…¥ä¹¦å:");
     scanf("%s", &process.name);
     getchar();
     if (booksNumber == 0)
     {
-        printf("ÇëÊäÈë×÷Õß:");
+        printf("è¯·è¾“å…¥ä½œè€…:");
         scanf("%s", &process.author);
         getchar();
-        printf("ÇëÊäÈë³ö°æÉçÃû:");
+        printf("è¯·è¾“å…¥å‡ºç‰ˆç¤¾å:");
         scanf("%s", &process.press);
         getchar();
         strcpy(books[booksNumber].name, process.name);
@@ -515,6 +599,11 @@ void Input_Book()
         strcpy(books[booksNumber].press, process.press);
         books[booksNumber].id = booksNumber + 1;
         booksNumber++;
+        strcpy(booksMenu[sunBooksnumber].name, process.name);
+        strcpy(booksMenu[sunBooksnumber].author, process.author);
+        strcpy(booksMenu[sunBooksnumber].press, process.press);
+        booksMenu[sunBooksnumber].id = sunBooksnumber + 1;
+        sunBooksnumber++;
     }
     else
     {
@@ -522,17 +611,17 @@ void Input_Book()
         {
             if (!strcmp(books[i].name, process.name))
             {
-                printf("¸ÃÊé±¾ÒÑ´æÔÚ,×¢²áÊ§°Ü\n");
+                printf("è¯¥ä¹¦æœ¬å·²å­˜åœ¨,æ³¨å†Œå¤±è´¥\n");
                 flag = 1;
                 break;
             }
         }
         if (flag == 0)
         {
-            printf("ÇëÊäÈë×÷Õß:");
+            printf("è¯·è¾“å…¥ä½œè€…:");
             scanf("%s", &process.author);
             getchar();
-            printf("ÇëÊäÈë³ö°æÉçÃû:");
+            printf("è¯·è¾“å…¥å‡ºç‰ˆç¤¾å:");
             scanf("%s", &process.press);
             getchar();
             strcpy(books[booksNumber].name, process.name);
@@ -540,57 +629,76 @@ void Input_Book()
             strcpy(books[booksNumber].press, process.press);
             books[booksNumber].id = booksNumber + 1;
             booksNumber++;
+            strcpy(booksMenu[sunBooksnumber].name, process.name);
+            strcpy(booksMenu[sunBooksnumber].author, process.author);
+            strcpy(booksMenu[sunBooksnumber].press, process.press);
+            booksMenu[sunBooksnumber].id = sunBooksnumber + 1;
+            sunBooksnumber++;
         }
     }
 }
 
 void BorrowBook(int text)
 {
-    if (users[text].borrownumber == 0)
+    if (booksNumber == 0)
     {
-        printf("Ã»ÓĞÊé±¾\n");
+        printf("æ²¡æœ‰ä¹¦æœ¬\n");
     }
     else
     {
-        if (users[text].returnnumber == 5)
+        if (users[text].returnnumber == 6)
         {
-            printf("ÄúÒÑ½èÔÄ5±¾Êé,Çë¹é»¹ºóÔÙ½øĞĞ½èÔÄ\n");
+            printf("æ‚¨å·²å€Ÿé˜…6æœ¬ä¹¦,è¯·å½’è¿˜åå†è¿›è¡Œå€Ÿé˜…\n");
         }
         else
         {
-            int botton;
+            char lock[20];
+            int botton = 0, t_num;
         BorrowBook:
-            printf("-------------------Êé¿âÄ¿Â¼-------------------------\n");
-            for (int i = 0; i < users[text].borrownumber; i++)
+            printf("-------------------ä¹¦åº“ç›®å½•-------------------------\n");
+            for (int i = 0; i < booksNumber; i++)
             {
-                printf("%2d %-30s %-20s %-20s\n", i, users[text].borrowmenu[i].name, users[text].borrowmenu[i].author, users[text].borrowmenu[i].press);
+                printf("%2d %-30s %-20s %-20s\n", i, books[i].name, books[i].author, books[i].press);
             }
-            printf("ÇëÊäÈëĞèÒª½èÔÄµÄĞòºÅ:");
-            scanf("%d", &botton);
+            printf("è¯·è¾“å…¥éœ€è¦å€Ÿé˜…çš„åºå·:");
+            scanf("%s", &lock);
             getchar();
-            if (botton >= 0 && botton < users[text].borrownumber)
+            t_num = strlen(lock);
+            for (int i_q = 0; i_q < t_num; i_q++)
             {
-                printf("½èÔÄ³É¹¦\n");
-                strcpy(users[text].returnmenu[users[text].returnnumber].author, users[text].borrowmenu[botton].author);
-                strcpy(users[text].returnmenu[users[text].returnnumber].name, users[text].borrowmenu[botton].name);
-                strcpy(users[text].returnmenu[users[text].returnnumber].press, users[text].borrowmenu[botton].press);
+                if (lock[i_q] < '0' || lock[i_q] > '9')
+                {
+                    printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
+                    goto BorrowBook;
+                }
+            }
+            for (int i_q = 0; i_q < t_num; i_q++)
+            {
+                botton = (botton * 10) + lock[i_q] - '0';
+            }
+            if (botton >= 0 && botton < booksNumber)
+            {
+                printf("å€Ÿé˜…æˆåŠŸ\n");
+                strcpy(users[text].returnmenu[users[text].returnnumber].author, books[botton].author);
+                strcpy(users[text].returnmenu[users[text].returnnumber].name, books[botton].name);
+                strcpy(users[text].returnmenu[users[text].returnnumber].press, books[botton].press);
                 users[text].returnnumber++;
-                for (int i = botton + 1; i < users[text].borrownumber; i++)
+                for (int i = botton + 1; i < booksNumber; i++)
                 {
-                    strcpy(users[text].borrowmenu[i - 1].author, users[text].borrowmenu[i].author);
-                    strcpy(users[text].borrowmenu[i - 1].name, users[text].borrowmenu[i].name);
-                    strcpy(users[text].borrowmenu[i - 1].press, users[text].borrowmenu[i].press);
+                    strcpy(books[i - 1].author, books[i].author);
+                    strcpy(books[i - 1].name, books[i].name);
+                    strcpy(books[i - 1].press, books[i].press);
                 }
-                users[text].borrownumber--;
-                for (int i = 0; i < users[text].borrownumber; i++)
+                booksNumber--;
+                for (int i = 0; i < booksNumber; i++)
                 {
-                    printf("%2d %-30s %-20s %-20s\n", i, users[text].borrowmenu[i].name, users[text].borrowmenu[i].author, users[text].borrowmenu[i].press);
+                    printf("%2d %-30s %-20s %-20s\n", i, books[i].name, books[i].author, books[i].press);
                 }
-                printf("ÏÔÊ¾Íê³É\n");
+                printf("æ˜¾ç¤ºå®Œæˆ\n");
             }
             else
             {
-                printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+                printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
                 goto BorrowBook;
             }
         }
@@ -603,7 +711,7 @@ void ReturnBook(int text)
     int flag = 1;
     if (users[text].returnnumber == 0)
     {
-        printf("Äú»¹Î´½èÊé\n");
+        printf("æ‚¨è¿˜æœªå€Ÿä¹¦\n");
     }
     else
     {
@@ -611,7 +719,7 @@ void ReturnBook(int text)
         {
             printf("%d %-30s %-20s %-20s\n", i, users[text].returnmenu[i].name, users[text].returnmenu[i].author, users[text].returnmenu[i].press);
         }
-        printf("ÇëÊäÈëĞèÒª¹é»¹µÄÊéÃû:");
+        printf("è¯·è¾“å…¥éœ€è¦å½’è¿˜çš„ä¹¦å:");
         scanf("%s", &process);
         getchar();
         int i;
@@ -625,15 +733,15 @@ void ReturnBook(int text)
         }
         if (flag == 1)
         {
-            printf("ÄúÎ´½èÕâ±¾Êé\n");
+            printf("æ‚¨æœªå€Ÿè¿™æœ¬ä¹¦\n");
         }
         else
         {
-            printf("¹é»¹³É¹¦\n");
-            strcpy(users[text].borrowmenu[users[text].borrownumber].author, users[text].returnmenu[i].author);
-            strcpy(users[text].borrowmenu[users[text].borrownumber].name, users[text].returnmenu[i].name);
-            strcpy(users[text].borrowmenu[users[text].borrownumber].press, users[text].returnmenu[i].press);
-            users[text].borrownumber++;
+            printf("å½’è¿˜æˆåŠŸ\n");
+            strcpy(books[booksNumber].author, users[text].returnmenu[i].author);
+            strcpy(books[booksNumber].name, users[text].returnmenu[i].name);
+            strcpy(books[booksNumber].press, users[text].returnmenu[i].press);
+            booksNumber++;
             for (int j = users[text].returnnumber - 1; j > i; j--)
             {
                 strcpy(users[text].returnmenu[j - 1].author, users[text].returnmenu[j].author);
@@ -650,7 +758,7 @@ void WritetoText()
     FILE *writeUser;
     if ((writeUser = fopen("user.txt", "w")) == NULL)
     {
-        printf("´ò¿ªÎÄ¼şÊ§°Ü!\n");
+        printf("æ‰“å¼€æ–‡ä»¶å¤±è´¥!\n");
     }
     else
     {
@@ -664,7 +772,7 @@ void WritetoText()
     FILE *writeBook;
     if ((writeBook = fopen("book.txt", "w")) == NULL)
     {
-        printf("´ò¿ªÎÄ¼şÊ§°Ü!\n");
+        printf("æ‰“å¼€æ–‡ä»¶å¤±è´¥!\n");
     }
     else
     {
@@ -675,7 +783,7 @@ void WritetoText()
         }
         fclose(writeBook);
     }
-    printf("³É¹¦½«¼ÇÂ¼Ğ´µ½ÎÄ¼ş£¡\n");
+    printf("æˆåŠŸå°†è®°å½•å†™åˆ°æ–‡ä»¶ï¼\n");
 }
 
 void ReadtoText()
@@ -686,7 +794,7 @@ void ReadtoText()
         FILE *readUser;
         if ((readUser = fopen("user.txt", "r")) == NULL)
         {
-            printf("ÓÃ»§´ò¿ªÎÄ¼şÊ§°Ü£¡\n");
+            printf("ç”¨æˆ·æ‰“å¼€æ–‡ä»¶å¤±è´¥ï¼\n");
         }
         else
         {
@@ -701,7 +809,7 @@ void ReadtoText()
         FILE *readBook;
         if ((readBook = fopen("book.txt", "r")) == NULL)
         {
-            printf("Í¼Êé´ò¿ªÎÄ¼şÊ§°Ü£¡\n");
+            printf("å›¾ä¹¦æ‰“å¼€æ–‡ä»¶å¤±è´¥ï¼\n");
         }
         else
         {
@@ -715,43 +823,43 @@ void ReadtoText()
         }
         if (flag == 2)
         {
-            printf("³É¹¦´ÓÎÄ¼şÊäÈëÊı¾İ£¡\n");
+            printf("æˆåŠŸä»æ–‡ä»¶è¾“å…¥æ•°æ®ï¼\n");
         }
     }
     else
     {
-        printf("ÒÑÓĞÊı¾İ,ÎŞ·¨´ÓÎÄ¼şµ¼Èë\n");
+        printf("å·²æœ‰æ•°æ®,æ— æ³•ä»æ–‡ä»¶å¯¼å…¥\n");
     }
 }
 
 int Administratorload()
 {
-    char id[] = {"¸£Öİ´óÑ§ÖÁ³ÏÑ§Ôº"};
+    char id[] = {"ç¦å·å¤§å­¦è‡³è¯šå­¦é™¢"};
     char password[] = {"123456"};
     char process[20];
-    printf("ÇëÊäÈë¹ÜÀíÔ±ÕËºÅ:");
+    printf("è¯·è¾“å…¥ç®¡ç†å‘˜è´¦å·:");
     scanf("%s", &process);
     getchar();
     if (!strcmp(id, process))
     {
-        printf("ÇëÊäÈë¹ÜÀíÔ±ÃÜÂë:");
+        printf("è¯·è¾“å…¥ç®¡ç†å‘˜å¯†ç :");
         scanf("%s", &process);
         getchar();
         if (!strcmp(password, process))
         {
-            printf("µÇÂ½³É¹¦\n");
+            printf("ç™»é™†æˆåŠŸ\n");
             return 0;
         }
         else
         {
-            printf("ÃÜÂë´íÎó\n");
-            printf("µÇÂ½Ê§°Ü\n");
+            printf("å¯†ç é”™è¯¯\n");
+            printf("ç™»é™†å¤±è´¥\n");
         }
     }
     else
     {
-        printf("ÕËºÅ´íÎó\n");
-        printf("µÇÂ½Ê§°Ü\n");
+        printf("è´¦å·é”™è¯¯\n");
+        printf("ç™»é™†å¤±è´¥\n");
     }
     return 1;
 }
@@ -768,21 +876,22 @@ void Administrator()
         {
             printf("*= ================================================  =*\n");
             printf("|| *******---------~~~~~~~~~~~~~~~~~~--------******* ||\n");
-            printf("||  == **** * »¶Ó­½øÈëÍ¼Êé¹ÜÀíÏµÍ³¹ÜÀí¶Ë  *  **** == ||\n");
-            printf("||  == 1.Êé±¾Â¼Èë                                 == ||\n");
-            printf("||  == 2.Êé±¾²éÑ¯                                 == ||\n");
-            printf("||  == 3.ÏÂ¼ÜÊé±¾                                 == ||\n");
-            printf("||  == 4.ÓÃ»§Â¼Èë                                 == ||\n");
-            printf("||  == 5.ÓÃ»§²éÑ¯                                 == ||\n");
-            printf("||  == 6.ÓÃ»§É¾³ı                                 == ||\n");
-            printf("||  == 7.Êı¾İµ¼Èë                                 == ||\n");
-            printf("||  == 8.¸ñÊ½»¯Êı¾İ¿â                             == ||\n");
-            printf("||  == 0.ÍË³ö¹ÜÀíÏµÍ³                             == ||\n");
+            printf("||  == **** * æ¬¢è¿è¿›å…¥å›¾ä¹¦ç®¡ç†ç³»ç»Ÿç®¡ç†ç«¯  *  **** == ||\n");
+            printf("||  == 1.ä¹¦æœ¬å½•å…¥                                 == ||\n");
+            printf("||  == 2.ä¹¦æœ¬æŸ¥è¯¢                                 == ||\n");
+            printf("||  == 3.ä¸‹æ¶ä¹¦æœ¬                                 == ||\n");
+            printf("||  == 4.ç”¨æˆ·å½•å…¥                                 == ||\n");
+            printf("||  == 5.ç”¨æˆ·æŸ¥è¯¢                                 == ||\n");
+            printf("||  == 6.ç”¨æˆ·åˆ é™¤                                 == ||\n");
+            printf("||  == 7.æ•°æ®å¯¼å…¥                                 == ||\n");
+            printf("||  == 8.æ ¼å¼åŒ–æ•°æ®åº“                             == ||\n");
+            printf("||  == 0.é€€å‡ºç®¡ç†ç³»ç»Ÿ                             == ||\n");
             printf("|| *******---------~~~~~~~~~~~~~~~~~~--------******* ||\n");
             printf("*= ================================================  =*\n");
-            printf("ÇëÊäÈëÄúĞèÒªµÄ¹¦ÄÜ°´Å¥:");
+            printf("è¯·è¾“å…¥æ‚¨éœ€è¦çš„åŠŸèƒ½æŒ‰é’®:");
         again1:
-            gets(key);
+            scanf("%s", &key);
+            getchar();
             text = strlen(key);
             if (text == 0)
             {
@@ -790,14 +899,14 @@ void Administrator()
             }
             else if (text > 1)
             {
-                printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+                printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
             }
             else
             {
                 botton = key[0];
                 if (botton == '9')
                 {
-                    printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+                    printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
                 }
                 else
                 {
@@ -808,16 +917,18 @@ void Administrator()
         chose = botton - '0';
         int bookName;
         char again_key[3], again_botton;
-        int again_txt;
+        int again_txt, t_num, t_g_b = 0;
+        char lock[20];
         switch (chose)
         {
         case 1:
             Input_Book();
             while (1)
             {
-                printf("»¹ĞèÒª¼ÌĞøÂğ?[yes(1) ; no(0)]\n");
+                printf("è¿˜éœ€è¦ç»§ç»­å—?[yes(1) ; no(0)]\n");
             againagain_a1:
-                gets(again_key);
+                scanf("%s", &again_key);
+                getchar();
                 again_txt = strlen(again_key);
                 if (again_txt == 0)
                 {
@@ -825,14 +936,14 @@ void Administrator()
                 }
                 else if (again_txt > 1)
                 {
-                    printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+                    printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
                 }
                 else
                 {
                     again_botton = again_key[0];
                     if (again_botton != '0' && again_botton != '1')
                     {
-                        printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+                        printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
                     }
                     else
                     {
@@ -844,25 +955,46 @@ void Administrator()
             {
                 goto againAdministrator;
             }
+            else
+            {
+                system("cls");
+            }
             break;
         case 2:
             if (booksNumber == 0)
             {
-                printf("´ËÊé¿âÎŞÍ¼Êé\n");
+                printf("æ­¤ä¹¦åº“æ— å›¾ä¹¦\n");
             }
             else
             {
-                for (int i = 0; i < booksNumber; i++)
+                for (int i = 0; i < sunBooksnumber; i++)
                 {
-                    printf("%2d %-30s %-20s %-20s\n", books[i].id, books[i].name, books[i].author, books[i].press);
+                    for (int j = 0; j < booksNumber; j++)
+                    {
+                        if (!strcmp(booksMenu[i].name, books[j].name))
+                        {
+                            t_g_b = 1;
+                            break;
+                        }
+                    }
+                    if (t_g_b == 1)
+                    {
+                        printf("%2d %-30s %-20s %-20s  å¯å€Ÿé˜…\n", i, booksMenu[i].name, booksMenu[i].author, booksMenu[i].press);
+                    }
+                    else
+                    {
+                        printf("%2d %-30s %-20s %-20s  å·²å€Ÿé˜…\n", i, booksMenu[i].name, booksMenu[i].author, booksMenu[i].press);
+                    }
+                    t_g_b = 0;
                 }
-                printf("ÏÔÊ¾Íê±Ï\n");
+                printf("æ˜¾ç¤ºå®Œæ¯•\n");
             }
             while (1)
             {
-                printf("»¹ĞèÒª¼ÌĞøÂğ?[yes(1) ; no(0)]\n");
+                printf("è¿˜éœ€è¦ç»§ç»­å—?[yes(1) ; no(0)]\n");
             againagain_a2:
-                gets(again_key);
+                scanf("%s", &again_key);
+                getchar();
                 again_txt = strlen(again_key);
                 if (again_txt == 0)
                 {
@@ -870,14 +1002,14 @@ void Administrator()
                 }
                 else if (again_txt > 1)
                 {
-                    printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+                    printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
                 }
                 else
                 {
                     again_botton = again_key[0];
                     if (again_botton != '0' && again_botton != '1')
                     {
-                        printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+                        printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
                     }
                     else
                     {
@@ -889,11 +1021,15 @@ void Administrator()
             {
                 goto againAdministrator;
             }
+            else
+            {
+                system("cls");
+            }
             break;
         case 3:
             if (booksNumber == 0)
             {
-                printf("É¾³ıÊ§°Ü£¡²»´æÔÚÍ¼ÊéĞÅÏ¢£¡\n");
+                printf("åˆ é™¤å¤±è´¥ï¼ä¸å­˜åœ¨å›¾ä¹¦ä¿¡æ¯ï¼\n");
             }
             else
             {
@@ -901,19 +1037,41 @@ void Administrator()
                 {
                     printf("%2d %-30s %-20s %-20s\n", j + 1, books[j].name, books[j].author, books[j].press);
                 }
-                printf("ÇëÊäÈëÒªÉ¾³ıµÄĞòºÅ£º");
-                scanf("%d", &bookName);
+            j_y_l:
+                printf("è¯·è¾“å…¥è¦åˆ é™¤çš„åºå·ï¼š");
+                scanf("%s", lock);
                 getchar();
+                t_num = strlen(lock);
+                for (int i_q = 0; i_q < t_num; i_q++)
+                {
+                    if (lock[i_q] < '0' || lock[i_q] > '9')
+                    {
+                        printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
+                        goto j_y_l;
+                    }
+                }
+                for (int i_q = 0; i_q < t_num; i_q++)
+                {
+                    bookName = (bookName * 10) + lock[i_q] - '0';
+                }
                 if (bookName > 0 && bookName <= booksNumber)
                 {
                     int confirm;
                     int flagN = 0;
-                    printf("È·ÈÏÉ¾³ıÂğ(ÊÇ'1',·ñ'0')");
-                    scanf("%d", &confirm);
+                i_i_i:
+                    printf("ç¡®è®¤åˆ é™¤å—(æ˜¯'1',å¦'0')");
+                    scanf("%s", &lock);
                     getchar();
+                    t_num = strlen(lock);
+                    if (t_num != 1)
+                    {
+                        printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
+                        goto i_i_i;
+                    }
+                    confirm = lock[0] - '0';
                     if (confirm == 1)
                     {
-                        printf("É¾³ıÍ¼ÊéĞÅÏ¢³É¹¦£¡\n");
+                        printf("åˆ é™¤å›¾ä¹¦ä¿¡æ¯æˆåŠŸï¼\n");
                         bookName = bookName - 1;
                         for (int i = bookName + 1; i < booksNumber; i++)
                         {
@@ -923,19 +1081,20 @@ void Administrator()
                     }
                     else
                     {
-                        printf("É¾³ıÊ§°Ü\n");
+                        printf("åˆ é™¤å¤±è´¥\n");
                     }
                 }
                 else
                 {
-                    printf("Ã»ÓĞÕâ±¾Í¼Êé,ÎŞ·¨É¾³ı\n");
+                    printf("æ²¡æœ‰è¿™æœ¬å›¾ä¹¦,æ— æ³•åˆ é™¤\n");
                 }
             }
             while (1)
             {
-                printf("»¹ĞèÒª¼ÌĞøÂğ?[yes(1) ; no(0)]\n");
+                printf("è¿˜éœ€è¦ç»§ç»­å—?[yes(1) ; no(0)]\n");
             againagain_a3:
-                gets(again_key);
+                scanf("%s", &again_key);
+                getchar();
                 again_txt = strlen(again_key);
                 if (again_txt == 0)
                 {
@@ -943,14 +1102,14 @@ void Administrator()
                 }
                 else if (again_txt > 1)
                 {
-                    printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+                    printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
                 }
                 else
                 {
                     again_botton = again_key[0];
                     if (again_botton != '0' && again_botton != '1')
                     {
-                        printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+                        printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
                     }
                     else
                     {
@@ -962,14 +1121,19 @@ void Administrator()
             {
                 goto againAdministrator;
             }
+            else
+            {
+                system("cls");
+            }
             break;
         case 4:
             Register();
             while (1)
             {
-                printf("»¹ĞèÒª¼ÌĞøÂğ?[yes(1) ; no(0)]\n");
+                printf("è¿˜éœ€è¦ç»§ç»­å—?[yes(1) ; no(0)]\n");
             againagain_a4:
-                gets(again_key);
+                scanf("%s", &again_key);
+                getchar();
                 again_txt = strlen(again_key);
                 if (again_txt == 0)
                 {
@@ -977,14 +1141,14 @@ void Administrator()
                 }
                 else if (again_txt > 1)
                 {
-                    printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+                    printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
                 }
                 else
                 {
                     again_botton = again_key[0];
                     if (again_botton != '0' && again_botton != '1')
                     {
-                        printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+                        printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
                     }
                     else
                     {
@@ -996,24 +1160,31 @@ void Administrator()
             {
                 goto againAdministrator;
             }
+            else
+            {
+                system("cls");
+            }
             break;
         case 5:
             if (usersNumber == 0)
             {
-                printf("Ã»ÓĞÓÃ»§Êı¾İ\n");
+                printf("æ²¡æœ‰ç”¨æˆ·æ•°æ®\n");
             }
             else
             {
+                printf("-------------------------------------------------------------------------\n");
                 for (int i = 0; i < usersNumber; i++)
                 {
-                    printf("%-20s%-20s\n", users[i].name, users[i].password);
+                    printf("%2d %-20s%-20s%-30s\n", i + 1, users[i].name, users[i].password, users[i].phone);
                 }
+                printf("-------------------------------------------------------------------------\n");
             }
             while (1)
             {
-                printf("»¹ĞèÒª¼ÌĞøÂğ?[yes(1) ; no(0)]\n");
+                printf("è¿˜éœ€è¦ç»§ç»­å—?[yes(1) ; no(0)]\n");
             againagain_a5:
-                gets(again_key);
+                scanf("%s", &again_key);
+                getchar();
                 again_txt = strlen(again_key);
                 if (again_txt == 0)
                 {
@@ -1021,14 +1192,14 @@ void Administrator()
                 }
                 else if (again_txt > 1)
                 {
-                    printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+                    printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
                 }
                 else
                 {
                     again_botton = again_key[0];
                     if (again_botton != '0' && again_botton != '1')
                     {
-                        printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+                        printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
                     }
                     else
                     {
@@ -1040,14 +1211,19 @@ void Administrator()
             {
                 goto againAdministrator;
             }
+            else
+            {
+                system("cls");
+            }
             break;
         case 6:
             Deleteuser();
             while (1)
             {
-                printf("»¹ĞèÒª¼ÌĞøÂğ?[yes(1) ; no(0)]\n");
+                printf("è¿˜éœ€è¦ç»§ç»­å—?[yes(1) ; no(0)]\n");
             againagain_a6:
-                gets(again_key);
+                scanf("%s", &again_key);
+                getchar();
                 again_txt = strlen(again_key);
                 if (again_txt == 0)
                 {
@@ -1055,14 +1231,14 @@ void Administrator()
                 }
                 else if (again_txt > 1)
                 {
-                    printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+                    printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
                 }
                 else
                 {
                     again_botton = again_key[0];
                     if (again_botton != '0' && again_botton != '1')
                     {
-                        printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+                        printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
                     }
                     else
                     {
@@ -1074,14 +1250,19 @@ void Administrator()
             {
                 goto againAdministrator;
             }
+            else
+            {
+                system("cls");
+            }
             break;
         case 7:
             ReadtoText();
             while (1)
             {
-                printf("»¹ĞèÒª¼ÌĞøÂğ?[yes(1) ; no(0)]\n");
+                printf("è¿˜éœ€è¦ç»§ç»­å—?[yes(1) ; no(0)]\n");
             againagain_a7:
-                gets(again_key);
+                scanf("%s", &again_key);
+                getchar();
                 again_txt = strlen(again_key);
                 if (again_txt == 0)
                 {
@@ -1089,14 +1270,14 @@ void Administrator()
                 }
                 else if (again_txt > 1)
                 {
-                    printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+                    printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
                 }
                 else
                 {
                     again_botton = again_key[0];
                     if (again_botton != '0' && again_botton != '1')
                     {
-                        printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+                        printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
                     }
                     else
                     {
@@ -1107,6 +1288,10 @@ void Administrator()
             if (again_botton == '1')
             {
                 goto againAdministrator;
+            }
+            else
+            {
+                system("cls");
             }
             break;
         case 8:
@@ -1126,9 +1311,10 @@ void Administrator()
             usersNumber = 0;
             while (1)
             {
-                printf("»¹ĞèÒª¼ÌĞøÂğ?[yes(1) ; no(0)]\n");
+                printf("è¿˜éœ€è¦ç»§ç»­å—?[yes(1) ; no(0)]\n");
             againagain_a8:
-                gets(again_key);
+                scanf("%s", &again_key);
+                getchar();
                 again_txt = strlen(again_key);
                 if (again_txt == 0)
                 {
@@ -1136,14 +1322,14 @@ void Administrator()
                 }
                 else if (again_txt > 1)
                 {
-                    printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+                    printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
                 }
                 else
                 {
                     again_botton = again_key[0];
                     if (again_botton != '0' && again_botton != '1')
                     {
-                        printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+                        printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
                     }
                     else
                     {
@@ -1155,14 +1341,18 @@ void Administrator()
             {
                 goto againAdministrator;
             }
+            else
+            {
+                system("cls");
+            }
             break;
         case 0:
-            printf("ÄúÒÑ³É¹¦ÍË³ö¸£Öİ´óÑ§ÖÁ³ÏÑ§ÔºÍ¼Êé¹ÜÀíÏµÍ³¹ÜÀíÔ±¶Ë\n");
+            printf("æ‚¨å·²æˆåŠŸé€€å‡ºç¦å·å¤§å­¦è‡³è¯šå­¦é™¢å›¾ä¹¦ç®¡ç†ç³»ç»Ÿç®¡ç†å‘˜ç«¯\n");
             system("pause");
             system("cls");
             break;
         default:
-            printf("ÊäÈë´íÎó,ÇëÖØĞÂÊäÈë\n");
+            printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
             goto againAdministrator;
             break;
         }
@@ -1171,46 +1361,84 @@ void Administrator()
 
 void Deleteuser()
 {
-    int userName;
+    int userName = 0;
     int i = 0, n;
     if (usersNumber == 0)
     {
-        printf("É¾³ıÊ§°Ü£¡²»´æÔÚÓÃ»§ĞÅÏ¢£¡\n");
+        printf("åˆ é™¤å¤±è´¥ï¼ä¸å­˜åœ¨ç”¨æˆ·ä¿¡æ¯ï¼\n");
     }
     else
     {
+        char lock[20];
+        int t_num;
+        printf("-------------------------------------------------------------\n");
         for (int j = 0; j < usersNumber; j++)
         {
-            printf("%d  %-20s%-20s\n", j, users[j].name, users[j].password);
+            printf("%d  %-20s%-20s\n", j + 1, users[j].name, users[j].password);
         }
-        printf("ÇëÊäÈëÒªÉ¾³ıµÄÓÃ»§ĞòºÅ£º");
-        scanf("%d", &userName);
+        printf("-------------------------------------------------------------\n");
+    a:
+        printf("è¯·è¾“å…¥è¦åˆ é™¤çš„ç”¨æˆ·åºå·ï¼š");
+        scanf("%s", &lock);
         getchar();
+        t_num = strlen(lock);
+        for (int i_q = 0; i_q < t_num; i_q++)
+        {
+            if (lock[i] < '0' || lock[i] > '9')
+            {
+                printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
+                goto a;
+            }
+        }
+        for (int i_q = 0; i_q < t_num; i_q++)
+        {
+            userName = (userName * 10) + lock[i_q] - '0';
+        }
         if (userName > 0 && userName <= usersNumber)
         {
-            int confirm;
-            int flagN = 0;
-            printf("È·ÈÏÉ¾³ıÂğ(ÊÇ'1',·ñ'0')");
-            scanf("%d", &confirm);
-            getchar();
-            if (confirm == 1)
+            if (users[userName - 1].returnnumber != 0)
             {
-                printf("É¾³ıÓÃ»§ĞÅÏ¢³É¹¦£¡\n");
-                userName = userName - 1;
-                for (int i = userName + 1; i < usersNumber; i++)
-                {
-                    users[i - 1] = users[i];
-                }
-                usersNumber--;
+                printf("æ­¤ç”¨æˆ·è¿˜æœ‰æœªå½’è¿˜çš„å›¾ä¹¦,æ— æ³•åˆ é™¤\n");
             }
             else
             {
-                printf("É¾³ıÊ§°Ü\n");
+                int confirm;
+                int flagN = 0;
+            b:
+                printf("ç¡®è®¤åˆ é™¤å—(æ˜¯'1',å¦'0')");
+                scanf("%s", &lock);
+                getchar();
+                t_num = strlen(lock);
+                if (t_num != 1)
+                {
+                    printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
+                    goto b;
+                }
+                if (lock[0] < '0' || lock[0] > '9')
+                {
+                    printf("è¾“å…¥é”™è¯¯,è¯·é‡æ–°è¾“å…¥\n");
+                    goto b;
+                }
+                confirm = lock[0] - '0';
+                if (confirm == 1)
+                {
+                    printf("åˆ é™¤ç”¨æˆ·ä¿¡æ¯æˆåŠŸï¼\n");
+                    userName = userName - 1;
+                    for (int i = userName + 1; i < usersNumber; i++)
+                    {
+                        users[i - 1] = users[i];
+                    }
+                    usersNumber--;
+                }
+                else
+                {
+                    printf("åˆ é™¤å¤±è´¥\n");
+                }
             }
         }
         else
         {
-            printf("É¾³ıÊ§°Ü£¡²»´æÔÚ´ËÓÃ»§ĞÅÏ¢!\n");
+            printf("åˆ é™¤å¤±è´¥ï¼ä¸å­˜åœ¨æ­¤ç”¨æˆ·ä¿¡æ¯!\n");
         }
     }
 }
